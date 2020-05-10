@@ -2050,6 +2050,7 @@ class App extends React.Component<any, AppState> {
         this.setState({
           draggingElement: element,
           editingElement: element,
+          multiElement: element,
         });
       }
     } else {
@@ -2346,6 +2347,15 @@ class App extends React.Component<any, AppState> {
       window.removeEventListener(EVENT.POINTER_MOVE, onPointerMove);
       window.removeEventListener(EVENT.POINTER_UP, onPointerUp);
 
+      if (draggingElement?.type === "draw") {
+        this.actionManager.executeAction(actionFinalize);
+        this.setState((prevState) => ({
+          selectedElementIds: {
+            ...prevState.selectedElementIds,
+            [draggingElement.id]: true,
+          },
+        }));
+      }
       if (isLinearElement(draggingElement)) {
         if (draggingElement!.points.length > 1) {
           history.resumeRecording();
